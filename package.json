@@ -1,0 +1,23 @@
+{
+  "name": "speakteam",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^10.1.3"
+  },
+  "dependencies": {
+    "arraybuffer-to-buffer": "0.0.7",
+    "audio-decode": "^1.4.0",
+    "audio-play": "^2.2.1",
+    "fibers": "^5.0.0",
+    "promise-socket": "^7.0.0",
+    "speaker": "^0.5.2",
+    "three": "^0.121.1"
+  }
+}
