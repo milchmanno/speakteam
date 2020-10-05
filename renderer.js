@@ -13,6 +13,7 @@ const gainNode = context.createGain();
 const filterNode = context.createBiquadFilter();
 const processor = context.createScriptProcessor(4096, 1, 1);
 
+var buffer = [];
 
 const stopButton = document.getElementById("stop");
 const startButton = document.getElementById("start");
@@ -52,8 +53,6 @@ function playAudioFromBuffer(fileContents) {
 stopButton.addEventListener("click", function () {
     shouldStop = true;
     // source.disconnect(filterNode);
-    console.log(buffer.length);
-    playAudioFromBuffer(buffer);
 })
 
 startButton.addEventListener("click", function () {
@@ -64,9 +63,7 @@ startButton.addEventListener("click", function () {
 })
 
 ipcRenderer.on("send-voice-data", function (event, arg) {
-    //console.log(arg);
-    var bytes = arg.split(',');
-    for (var i = 0; i < bytes.length; i++) {
-        buffer.push(parseFloat(bytes[i]));
-    }
+    arg = String(arg).split(',');
+    console.log(arg);
+    playAudioFromBuffer(new Buffer.from(arg));
 })
