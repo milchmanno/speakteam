@@ -3,9 +3,8 @@ const {
     BrowserWindow,
     ipcMain
 } = require('electron')
-const {
-    Client
-} = require("./networking/tcp")
+const Client = require('./networking/client');
+var client = new Client();
 
 function createWindow() {
     const win = new BrowserWindow({

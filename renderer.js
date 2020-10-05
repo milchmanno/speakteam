@@ -1,6 +1,10 @@
 const {
     ipcRenderer
 } = require("electron");
+const Speaker = require('speaker');
+const stream = require('stream');
+
+let speaker = new Speaker();
 
 const context = new AudioContext();
 var source = null;
@@ -13,7 +17,6 @@ const processor = context.createScriptProcessor(4096, 1, 1);
 const stopButton = document.getElementById("stop");
 const startButton = document.getElementById("start");
 var shouldStop = true;
-var buffer = [];
 
 window.onload = function () {
     navigator.mediaDevices.getUserMedia({
@@ -40,10 +43,17 @@ const handleAudioData = function (stream) {
     gainNode.gain.value = 0.5;
 }
 
+function playAudioFromBuffer(fileContents) {
+    let bufferStream = new stream.PassThrough();
+    bufferStream.end(fileContents);
+    bufferStream.pipe(speaker);
+}
+
 stopButton.addEventListener("click", function () {
     shouldStop = true;
     // source.disconnect(filterNode);
     console.log(buffer.length);
+    playAudioFromBuffer(buffer);
 })
 
 startButton.addEventListener("click", function () {

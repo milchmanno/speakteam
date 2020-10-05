@@ -1,55 +1,9 @@
 'use strict';
 
 const net = require("net");
-const os = require("os");
-const crypto = require("crypto");
 
 const PORT = 10000;
 const HOST = "localhost";
-
-class Server {
-    constructor(port, address) {
-        this.port = port || PORT;
-        this.address = address || HOST;
-        this.init();
-        this.sockets = [];
-    }
-
-    init() {
-        let server = this;
-        let onClientConnected = (socket) => {
-
-            socket.on("data", (data) => {
-                if (data.toString() == "init")
-                    this.sockets.push(socket);
-                else {
-                    socket.write(data);
-                    console.log(String(data));
-                }
-            })
-
-            socket.on("end", function () {
-                console.log("connection closed by " + socket);
-            })
-
-            socket.on("error", (err) => {
-                console.log(`error: ${err}`);
-            })
-        }
-
-        server.connection = net.createServer(onClientConnected);
-        server.connection.listen(PORT, HOST, function () {
-            console.log(`Server startet at: ${HOST}:${PORT}`);
-        })
-    }
-
-    broadcast(message, sender) {
-        this.sockets.forEach(function (socket) {
-            if (socket === sender) return;
-            socket.write(message);
-        })
-    }
-}
 
 class Client {
     constructor(port, address) {
@@ -57,6 +11,7 @@ class Client {
         this.address = address || HOST;
         this.port = port || PORT;
         this.init();
+        this.reconnecting = true;
     }
 
     init() {
@@ -67,6 +22,8 @@ class Client {
             client.socket.setMaxListeners(0);
             client.socket.write("init");
         });
+
+        client.socket.setKeepAlive(true);
 
         client.socket.on("close", () => {
             client.socket.removeAllListeners();
@@ -100,7 +57,4 @@ class Client {
     }
 }
 
-module.exports = {
-    Server,
-    Client
-};
+module.exports = Client;
